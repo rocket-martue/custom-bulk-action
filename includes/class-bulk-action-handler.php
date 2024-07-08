@@ -96,6 +96,7 @@ class BulkActionHandler {
 		self::migrate_title( $post_ids );
 		self::migrate_content( $post_ids );
 		self::migrate_thumbnail( $post_ids );
+		self::assign_custom_type_terms( $post_ids );
 	}
 
 	/**
@@ -148,10 +149,21 @@ class BulkActionHandler {
 	 * @param array $post_ids 投稿IDの配列
 	 */
 	public static function assign_custom_type_terms( $post_ids ) {
+		$valid_terms = array( 'furisode', 'kimono' );
+
 		foreach ( $post_ids as $post_id ) {
-			$custom_type = get_post_meta( $post_id, 'type', true );
-			if ( in_array( $custom_type, array( 'furisode', 'kimono' ), true ) ) {
-				wp_set_post_terms( $post_id, $custom_type, 'type', true );
+			// カスタムフィールド 'type' の値を取得する
+			$custom_field_value = get_post_meta( $post_id, 'type', true );
+
+			// カスタムフィールドの値が 'furisode' または 'kimono' の場合のみ処理を続ける
+			if ( in_array( $custom_field_value, $valid_terms, true ) ) {
+				// カスタムタクソノミー 'type' に値が存在しない場合、新しいタームを作成する
+				if ( ! term_exists( $custom_field_value, 'type' ) ) {
+					wp_insert_term( $custom_field_value, 'type' );
+				}
+
+				// 投稿に対してそのタームを関連付ける
+				wp_set_object_terms( $post_id, $custom_field_value, 'type' );
 			}
 		}
 	}
