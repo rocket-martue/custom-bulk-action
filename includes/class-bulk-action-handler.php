@@ -19,7 +19,7 @@ class BulkActionHandler {
 	public static function migrate_title( $post_ids ) {
 		foreach ( $post_ids as $post_id ) {
 			$custom_title = get_post_meta( $post_id, 'title2', true );
-			if ( $custom_title ) {
+			if ( ! empty( $custom_title ) ) {
 				wp_update_post(
 					array(
 						'ID'         => $post_id,
@@ -37,8 +37,10 @@ class BulkActionHandler {
 	 */
 	public static function migrate_content( $post_ids ) {
 		foreach ( $post_ids as $post_id ) {
-			$custom_content = get_post_meta( $post_id, 'body', true );
-			if ( $custom_content ) {
+			$custom_body       = get_post_meta( $post_id, 'body', true );
+			$custom_plain_text = get_post_meta( $post_id, 'plain_text', true );
+			$custom_content    = $custom_body . $custom_plain_text;
+			if ( ! empty( $custom_content ) ) {
 				wp_update_post(
 					array(
 						'ID'           => $post_id,
@@ -57,7 +59,7 @@ class BulkActionHandler {
 	public static function migrate_thumbnail( $post_ids ) {
 		foreach ( $post_ids as $post_id ) {
 			$custom_thumbnail = get_post_meta( $post_id, 'thumbnail', true );
-			if ( $custom_thumbnail ) {
+			if ( ! empty( $custom_thumbnail ) ) {
 				set_post_thumbnail( $post_id, $custom_thumbnail );
 			}
 		}
@@ -79,12 +81,13 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールド 'type' の値をタクソノミー 'type' に登録
+	 * カスタムフィールド type の値をタクソノミーに登録
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
 	public static function assign_custom_type_terms( $post_ids ) {
 		$valid_terms = array( 'furisode', 'kimono' );
+
 		foreach ( $post_ids as $post_id ) {
 			$custom_field_value = get_post_meta( $post_id, 'type', true );
 			if ( in_array( $custom_field_value, $valid_terms, true ) ) {
@@ -109,7 +112,7 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールド 'title2' を削除
+	 * カスタムフィールド title2 を削除
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
@@ -120,7 +123,7 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールド 'body' を削除
+	 * カスタムフィールド body を削除
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
@@ -131,7 +134,7 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールド 'plain_text' を削除
+	 * カスタムフィールド plain_text を削除
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
@@ -142,7 +145,7 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールド 'thumbnail' を削除
+	 * カスタムフィールド thumbnail を削除
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
@@ -153,7 +156,7 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールド 'type' を削除
+	 * カスタムフィールド type を削除
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
