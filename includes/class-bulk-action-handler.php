@@ -144,6 +144,17 @@ class BulkActionHandler {
 	}
 
 	/**
+	 * カスタムフィールド 'type' の値を削除する
+	 *
+	 * @param array $post_ids 投稿IDの配列
+	 */
+	public static function delete_custom_type( $post_ids ) {
+		foreach ( $post_ids as $post_id ) {
+			delete_post_meta( $post_id, 'type' );
+		}
+	}
+
+	/**
 	 * カスタムフィールドの値をタクソノミーに登録する
 	 *
 	 * @param array $post_ids 投稿IDの配列

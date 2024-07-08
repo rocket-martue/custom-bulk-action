@@ -77,6 +77,7 @@ class CustomBulkAction {
 		$bulk_actions['delete_custom_body']       = __( 'カスタム本文を削除', 'custom-bulk-action' );
 		$bulk_actions['delete_custom_plain_text'] = __( 'カスタムプレーンテキストを削除', 'custom-bulk-action' );
 		$bulk_actions['delete_custom_thumbnail']  = __( 'カスタムサムネイルを削除', 'custom-bulk-action' );
+		$bulk_actions['delete_custom_type']       = __( 'カスタムフィールド type を削除', 'custom-bulk-action' );
 		$bulk_actions['assign_custom_type_terms'] = __( 'type の値をタクソノミーに登録', 'custom-bulk-action' );
 		return $bulk_actions;
 	}
@@ -90,59 +91,49 @@ class CustomBulkAction {
 	 * @return string
 	 */
 	public function handle_bulk_action( $redirect_to, $doaction, $post_ids ) {
-		if ( empty( $post_ids ) ) {
-			return $redirect_to;
-		}
-
-		$action = sanitize_text_field( $doaction );
-
+		// nonceチェック
 		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-posts' ) ) {
 			return $redirect_to;
 		}
 
-		switch ( $action ) {
+		switch ( $doaction ) {
 			case 'migrate_title':
 				BulkActionHandler::migrate_title( $post_ids );
-				$redirect_to = add_query_arg( 'bulk_migrated_title', count( $post_ids ), $redirect_to );
 				break;
 			case 'migrate_content':
 				BulkActionHandler::migrate_content( $post_ids );
-				$redirect_to = add_query_arg( 'bulk_migrated_content', count( $post_ids ), $redirect_to );
 				break;
 			case 'migrate_thumbnail':
 				BulkActionHandler::migrate_thumbnail( $post_ids );
-				$redirect_to = add_query_arg( 'bulk_migrated_thumbnail', count( $post_ids ), $redirect_to );
 				break;
 			case 'replace_slug_with_id':
 				BulkActionHandler::replace_slug_with_id( $post_ids );
-				$redirect_to = add_query_arg( 'bulk_replaced_slug', count( $post_ids ), $redirect_to );
 				break;
 			case 'migrate_all':
 				BulkActionHandler::migrate_all( $post_ids );
-				$redirect_to = add_query_arg( 'bulk_migrated_all', count( $post_ids ), $redirect_to );
 				break;
 			case 'delete_custom_title':
 				BulkActionHandler::delete_custom_title( $post_ids );
-				$redirect_to = add_query_arg( 'bulk_deleted_custom_title', count( $post_ids ), $redirect_to );
 				break;
 			case 'delete_custom_body':
 				BulkActionHandler::delete_custom_body( $post_ids );
-				$redirect_to = add_query_arg( 'bulk_deleted_custom_body', count( $post_ids ), $redirect_to );
 				break;
 			case 'delete_custom_plain_text':
 				BulkActionHandler::delete_custom_plain_text( $post_ids );
-				$redirect_to = add_query_arg( 'bulk_deleted_custom_plain_text', count( $post_ids ), $redirect_to );
 				break;
 			case 'delete_custom_thumbnail':
 				BulkActionHandler::delete_custom_thumbnail( $post_ids );
-				$redirect_to = add_query_arg( 'bulk_deleted_custom_thumbnail', count( $post_ids ), $redirect_to );
+				break;
+			case 'delete_custom_type':
+				BulkActionHandler::delete_custom_type( $post_ids );
 				break;
 			case 'assign_custom_type_terms':
 				BulkActionHandler::assign_custom_type_terms( $post_ids );
-				$redirect_to = add_query_arg( 'bulk_assigned_custom_type_terms', count( $post_ids ), $redirect_to );
 				break;
+			default:
+				return $redirect_to;
 		}
 
-		return $redirect_to;
+		return add_query_arg( 'bulk_action_completed', $doaction, $redirect_to );
 	}
 }
