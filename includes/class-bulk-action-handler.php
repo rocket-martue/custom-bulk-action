@@ -141,4 +141,18 @@ class BulkActionHandler {
 			delete_post_meta( $post_id, 'thumbnail' );
 		}
 	}
+
+	/**
+	 * カスタムフィールドの値をタクソノミーに登録する
+	 *
+	 * @param array $post_ids 投稿IDの配列
+	 */
+	public static function assign_custom_type_terms( $post_ids ) {
+		foreach ( $post_ids as $post_id ) {
+			$custom_type = get_post_meta( $post_id, 'type', true );
+			if ( in_array( $custom_type, array( 'furisode', 'kimono' ), true ) ) {
+				wp_set_post_terms( $post_id, $custom_type, 'type', true );
+			}
+		}
+	}
 }

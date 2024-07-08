@@ -77,6 +77,7 @@ class CustomBulkAction {
 		$bulk_actions['delete_custom_body']       = __( 'カスタム本文を削除', 'custom-bulk-action' );
 		$bulk_actions['delete_custom_plain_text'] = __( 'カスタムプレーンテキストを削除', 'custom-bulk-action' );
 		$bulk_actions['delete_custom_thumbnail']  = __( 'カスタムサムネイルを削除', 'custom-bulk-action' );
+		$bulk_actions['assign_custom_type_terms'] = __( 'type の値をタクソノミーに登録', 'custom-bulk-action' );
 		return $bulk_actions;
 	}
 
@@ -135,6 +136,10 @@ class CustomBulkAction {
 			case 'delete_custom_thumbnail':
 				BulkActionHandler::delete_custom_thumbnail( $post_ids );
 				$redirect_to = add_query_arg( 'bulk_deleted_custom_thumbnail', count( $post_ids ), $redirect_to );
+				break;
+			case 'assign_custom_type_terms':
+				BulkActionHandler::assign_custom_type_terms( $post_ids );
+				$redirect_to = add_query_arg( 'bulk_assigned_custom_type_terms', count( $post_ids ), $redirect_to );
 				break;
 		}
 
