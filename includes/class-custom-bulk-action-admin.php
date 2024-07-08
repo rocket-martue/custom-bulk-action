@@ -26,6 +26,13 @@ class CustomBulkActionAdmin {
 	private $enabled_actions;
 
 	/**
+	 * バルクアクション名とラベルのマッピング
+	 *
+	 * @var array
+	 */
+	private $action_labels;
+
+	/**
 	 * コンストラクタ
 	 */
 	private function __construct() {
@@ -42,6 +49,21 @@ class CustomBulkActionAdmin {
 			'delete_custom_plain_text' => true,
 			'delete_custom_thumbnail'  => true,
 			'delete_custom_type'       => true,
+		);
+
+		// バルクアクション名とラベルのマッピングを設定
+		$this->action_labels = array(
+			'migrate_title'            => 'タイトルを移植',
+			'migrate_content'          => 'コンテンツを移植',
+			'migrate_thumbnail'        => 'アイキャッチ画像を移植',
+			'replace_slug_with_id'     => 'スラッグを投稿IDに置き換える',
+			'assign_custom_type_terms' => 'type の値をタクソノミーに登録',
+			'migrate_all'              => 'すべてのカスタムフィールドを移植',
+			'delete_custom_title'      => 'カスタムタイトルを削除',
+			'delete_custom_body'       => 'カスタム本文を削除',
+			'delete_custom_plain_text' => 'カスタムプレーンテキストを削除',
+			'delete_custom_thumbnail'  => 'カスタムサムネイルを削除',
+			'delete_custom_type'       => 'カスタムフィールド type を削除',
 		);
 
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
@@ -111,7 +133,7 @@ class CustomBulkActionAdmin {
 		foreach ( $this->enabled_actions as $action => $enabled ) {
 			add_settings_field(
 				$action,
-				esc_html( ucwords( str_replace( '_', ' ', $action ) ) ),
+				esc_html( $this->action_labels[ $action ] ),
 				array( $this, 'create_checkbox_field' ),
 				'custom-bulk-action',
 				'custom_bulk_action_section',
