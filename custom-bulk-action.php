@@ -2,27 +2,21 @@
 /**
  * Plugin Name: Custom Bulk Action
  * Description: 各カスタム投稿タイプにカスタムバルクアクションを追加します。
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Rocket Martue
  * Text Domain: custom-bulk-action
- *
  * @package CustomBulkAction
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+	exit; // Exit if accessed directly.
 }
 
-/**
- * クラスファイルの読み込み
- */
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-custom-bulk-action.php';
+// インクルードファイルを読み込む
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-bulk-action-handler.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-custom-bulk-action.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-custom-bulk-action-admin.php';
 
-/**
- * 初期化関数の呼び出し
- */
-function custom_bulk_action_init() {
-	CustomBulkAction\CustomBulkAction::get_instance();
-}
-add_action( 'plugins_loaded', 'custom_bulk_action_init' );
+// プラグインの初期化
+CustomBulkAction\CustomBulkAction::get_instance();
+CustomBulkAction\CustomBulkActionAdmin::get_instance();

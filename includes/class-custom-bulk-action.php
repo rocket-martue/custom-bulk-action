@@ -68,31 +68,55 @@ class CustomBulkAction {
 	 * @return array
 	 */
 	public function add_bulk_actions( $bulk_actions ) {
-		$bulk_actions['migrate_title']            = __( 'タイトルを移植', 'custom-bulk-action' );
-		$bulk_actions['migrate_content']          = __( 'コンテンツを移植', 'custom-bulk-action' );
-		$bulk_actions['migrate_thumbnail']        = __( 'アイキャッチ画像を移植', 'custom-bulk-action' );
-		$bulk_actions['replace_slug_with_id']     = __( 'スラッグを投稿IDに置き換える', 'custom-bulk-action' );
-		$bulk_actions['assign_custom_type_terms'] = __( 'type の値をタクソノミーに登録', 'custom-bulk-action' );
-		$bulk_actions['migrate_all']              = __( 'すべてのカスタムフィールドを移植', 'custom-bulk-action' );
-		$bulk_actions['delete_custom_title']      = __( 'カスタムタイトルを削除', 'custom-bulk-action' );
-		$bulk_actions['delete_custom_body']       = __( 'カスタム本文を削除', 'custom-bulk-action' );
-		$bulk_actions['delete_custom_plain_text'] = __( 'カスタムプレーンテキストを削除', 'custom-bulk-action' );
-		$bulk_actions['delete_custom_thumbnail']  = __( 'カスタムサムネイルを削除', 'custom-bulk-action' );
-		$bulk_actions['delete_custom_type']       = __( 'カスタムフィールド type を削除', 'custom-bulk-action' );
+		$enabled_actions = get_option( 'custom_bulk_action_enabled', array() );
+
+		if ( isset( $enabled_actions['migrate_title'] ) && $enabled_actions['migrate_title'] ) {
+			$bulk_actions['migrate_title'] = esc_html__( 'タイトルを移植', 'custom-bulk-action' );
+		}
+		if ( isset( $enabled_actions['migrate_content'] ) && $enabled_actions['migrate_content'] ) {
+			$bulk_actions['migrate_content'] = esc_html__( 'コンテンツを移植', 'custom-bulk-action' );
+		}
+		if ( isset( $enabled_actions['migrate_thumbnail'] ) && $enabled_actions['migrate_thumbnail'] ) {
+			$bulk_actions['migrate_thumbnail'] = esc_html__( 'アイキャッチ画像を移植', 'custom-bulk-action' );
+		}
+		if ( isset( $enabled_actions['replace_slug_with_id'] ) && $enabled_actions['replace_slug_with_id'] ) {
+			$bulk_actions['replace_slug_with_id'] = esc_html__( 'スラッグを投稿IDに置き換える', 'custom-bulk-action' );
+		}
+		if ( isset( $enabled_actions['assign_custom_type_terms'] ) && $enabled_actions['assign_custom_type_terms'] ) {
+			$bulk_actions['assign_custom_type_terms'] = esc_html__( 'type の値をタクソノミーに登録', 'custom-bulk-action' );
+		}
+		if ( isset( $enabled_actions['migrate_all'] ) && $enabled_actions['migrate_all'] ) {
+			$bulk_actions['migrate_all'] = esc_html__( 'すべてのカスタムフィールドを移植', 'custom-bulk-action' );
+		}
+		if ( isset( $enabled_actions['delete_custom_title'] ) && $enabled_actions['delete_custom_title'] ) {
+			$bulk_actions['delete_custom_title'] = esc_html__( 'カスタムタイトルを削除', 'custom-bulk-action' );
+		}
+		if ( isset( $enabled_actions['delete_custom_body'] ) && $enabled_actions['delete_custom_body'] ) {
+			$bulk_actions['delete_custom_body'] = esc_html__( 'カスタム本文を削除', 'custom-bulk-action' );
+		}
+		if ( isset( $enabled_actions['delete_custom_plain_text'] ) && $enabled_actions['delete_custom_plain_text'] ) {
+			$bulk_actions['delete_custom_plain_text'] = esc_html__( 'カスタムプレーンテキストを削除', 'custom-bulk-action' );
+		}
+		if ( isset( $enabled_actions['delete_custom_thumbnail'] ) && $enabled_actions['delete_custom_thumbnail'] ) {
+			$bulk_actions['delete_custom_thumbnail'] = esc_html__( 'カスタムサムネイルを削除', 'custom-bulk-action' );
+		}
+		if ( isset( $enabled_actions['delete_custom_type'] ) && $enabled_actions['delete_custom_type'] ) {
+			$bulk_actions['delete_custom_type'] = esc_html__( 'カスタムフィールド type を削除', 'custom-bulk-action' );
+		}
+
 		return $bulk_actions;
 	}
 
 	/**
 	 * バルクアクションを処理する
 	 *
-	 * @param string $redirect_to リダイレクト先URL
+	 * @param string $redirect_to リダイレクト先のURL
 	 * @param string $doaction 実行するアクション
 	 * @param array $post_ids 投稿IDの配列
-	 * @return string
+	 * @return string リダイレクト先のURL
 	 */
 	public function handle_bulk_action( $redirect_to, $doaction, $post_ids ) {
-		// nonceチェック
-		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'bulk-posts' ) ) {
+		if ( ! check_admin_referer( 'bulk-posts' ) ) {
 			return $redirect_to;
 		}
 
@@ -108,6 +132,9 @@ class CustomBulkAction {
 				break;
 			case 'replace_slug_with_id':
 				BulkActionHandler::replace_slug_with_id( $post_ids );
+				break;
+			case 'assign_custom_type_terms':
+				BulkActionHandler::assign_custom_type_terms( $post_ids );
 				break;
 			case 'migrate_all':
 				BulkActionHandler::migrate_all( $post_ids );
@@ -127,13 +154,8 @@ class CustomBulkAction {
 			case 'delete_custom_type':
 				BulkActionHandler::delete_custom_type( $post_ids );
 				break;
-			case 'assign_custom_type_terms':
-				BulkActionHandler::assign_custom_type_terms( $post_ids );
-				break;
-			default:
-				return $redirect_to;
 		}
 
-		return add_query_arg( 'bulk_action_completed', $doaction, $redirect_to );
+		return $redirect_to;
 	}
 }

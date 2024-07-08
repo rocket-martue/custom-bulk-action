@@ -1,20 +1,26 @@
 === Custom Bulk Action ===
 Contributors: Rocket Martue
-Tags: bulk action, custom post types, migration
+Tags: bulk action, custom post type, migration
 Requires at least: 6.5
 Tested up to: 6.5.4
 Requires PHP: 8.1
-Stable tag: 1.0.0
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Stable tag: 1.1.0
 
 == Description ==
+
 各カスタム投稿タイプにカスタムバルクアクションを追加します。
 
 == Installation ==
-1. プラグインファイルを `wp-content/plugins/` ディレクトリにアップロードします。
-2. WordPress の「プラグイン」メニューからプラグインを有効化します。
+
+1. アップロードする
+2. 有効化する
 
 == Changelog ==
+
+= 1.1.0 =
+* 管理画面でバルクアクションを有効化/無効化する機能を追加
+* カスタムフィールド 'type' の値をタクソノミー 'type' に登録するバルクアクションを追加
+* カスタムフィールド 'type' の値を削除するバルクアクションを追加
+
 = 1.0.0 =
-* 初回リリース。
+* 初回リリース
