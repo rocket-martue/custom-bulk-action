@@ -72,13 +72,13 @@ class CustomBulkAction {
 		$bulk_actions['migrate_content']          = __( 'コンテンツを移植', 'custom-bulk-action' );
 		$bulk_actions['migrate_thumbnail']        = __( 'アイキャッチ画像を移植', 'custom-bulk-action' );
 		$bulk_actions['replace_slug_with_id']     = __( 'スラッグを投稿IDに置き換える', 'custom-bulk-action' );
+		$bulk_actions['assign_custom_type_terms'] = __( 'type の値をタクソノミーに登録', 'custom-bulk-action' );
 		$bulk_actions['migrate_all']              = __( 'すべてのカスタムフィールドを移植', 'custom-bulk-action' );
 		$bulk_actions['delete_custom_title']      = __( 'カスタムタイトルを削除', 'custom-bulk-action' );
 		$bulk_actions['delete_custom_body']       = __( 'カスタム本文を削除', 'custom-bulk-action' );
 		$bulk_actions['delete_custom_plain_text'] = __( 'カスタムプレーンテキストを削除', 'custom-bulk-action' );
 		$bulk_actions['delete_custom_thumbnail']  = __( 'カスタムサムネイルを削除', 'custom-bulk-action' );
 		$bulk_actions['delete_custom_type']       = __( 'カスタムフィールド type を削除', 'custom-bulk-action' );
-		$bulk_actions['assign_custom_type_terms'] = __( 'type の値をタクソノミーに登録', 'custom-bulk-action' );
 		return $bulk_actions;
 	}
 
