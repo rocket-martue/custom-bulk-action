@@ -12,14 +12,14 @@ namespace CustomBulkAction;
  */
 class BulkActionHandler {
 	/**
-	 * カスタムフィールドのタイトルを移植
+	 * タイトルを移植
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
 	public static function migrate_title( $post_ids ) {
 		foreach ( $post_ids as $post_id ) {
 			$custom_title = get_post_meta( $post_id, 'title2', true );
-			if ( $custom_title ) {
+			if ( ! empty( $custom_title ) ) {
 				wp_update_post(
 					array(
 						'ID'         => $post_id,
@@ -31,19 +31,20 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールドのコンテンツを移植
+	 * コンテンツを移植
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
 	public static function migrate_content( $post_ids ) {
 		foreach ( $post_ids as $post_id ) {
-			$custom_content = get_post_meta( $post_id, 'body', true );
-			$plain_text     = get_post_meta( $post_id, 'plain_text', true );
-			if ( $custom_content ) {
+			$custom_body       = get_post_meta( $post_id, 'body', true );
+			$custom_plain_text = get_post_meta( $post_id, 'plain_text', true );
+			$custom_content    = $custom_body . $custom_plain_text;
+			if ( ! empty( $custom_content ) ) {
 				wp_update_post(
 					array(
 						'ID'           => $post_id,
-						'post_content' => $custom_content . $plain_text,
+						'post_content' => $custom_content,
 					)
 				);
 			}
@@ -51,14 +52,14 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールドのサムネイルを移植
+	 * アイキャッチ画像を移植
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
 	public static function migrate_thumbnail( $post_ids ) {
 		foreach ( $post_ids as $post_id ) {
 			$custom_thumbnail = get_post_meta( $post_id, 'thumbnail', true );
-			if ( $custom_thumbnail ) {
+			if ( ! empty( $custom_thumbnail ) ) {
 				set_post_thumbnail( $post_id, $custom_thumbnail );
 			}
 		}
@@ -71,22 +72,22 @@ class BulkActionHandler {
 	 */
 	public static function replace_slug_with_id( $post_ids ) {
 		foreach ( $post_ids as $post_id ) {
-			wp_update_post(
-				array(
-					'ID'        => $post_id,
-					'post_name' => $post_id,
-				)
+			$post = array(
+				'ID'        => $post_id,
+				'post_name' => $post_id,
 			);
+			wp_update_post( $post );
 		}
 	}
 
 	/**
-	 * カスタムフィールド 'type' の値をタクソノミー 'type' に登録
+	 * カスタムフィールド type の値をタクソノミーに登録
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
 	public static function assign_custom_type_terms( $post_ids ) {
 		$valid_terms = array( 'furisode', 'kimono' );
+
 		foreach ( $post_ids as $post_id ) {
 			$custom_field_value = get_post_meta( $post_id, 'type', true );
 			if ( in_array( $custom_field_value, $valid_terms, true ) ) {
@@ -99,7 +100,7 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * 全てのカスタムフィールドを移植
+	 * すべてのカスタムフィールドを移植
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
@@ -111,7 +112,7 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールド 'title2' を削除
+	 * カスタムフィールド title2 を削除
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
@@ -122,7 +123,7 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールド 'body' を削除
+	 * カスタムフィールド body を削除
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
@@ -133,7 +134,7 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールド 'plain_text' を削除
+	 * カスタムフィールド plain_text を削除
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
@@ -144,7 +145,7 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールド 'thumbnail' を削除
+	 * カスタムフィールド thumbnail を削除
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */
@@ -155,7 +156,7 @@ class BulkActionHandler {
 	}
 
 	/**
-	 * カスタムフィールド 'type' を削除
+	 * カスタムフィールド type を削除
 	 *
 	 * @param array $post_ids 投稿IDの配列
 	 */

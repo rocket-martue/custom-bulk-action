@@ -85,7 +85,7 @@ class CustomBulkAction {
 	}
 
 	/**
-	 * バルクアクションを処理
+	 * バルクアクションを処理する
 	 *
 	 * @param string $redirect_to リダイレクト先のURL
 	 * @param string $doaction 実行するアクション
@@ -93,14 +93,27 @@ class CustomBulkAction {
 	 * @return string リダイレクト先のURL
 	 */
 	public function handle_bulk_action( $redirect_to, $doaction, $post_ids ) {
-		$enabled_actions = CustomBulkActionAdmin::get_instance()->get_enabled_actions();
-
-		if ( true === isset( $enabled_actions[ $doaction ] ) && $enabled_actions[ $doaction ] ) {
+		if ( in_array(
+			$doaction,
+			array(
+				'migrate_title',
+				'migrate_content',
+				'migrate_thumbnail',
+				'replace_slug_with_id',
+				'assign_custom_type_terms',
+				'migrate_all',
+				'delete_custom_title',
+				'delete_custom_body',
+				'delete_custom_plain_text',
+				'delete_custom_thumbnail',
+				'delete_custom_type',
+			),
+			true
+		) ) {
 			check_admin_referer( 'bulk-posts' );
 			call_user_func( array( 'CustomBulkAction\BulkActionHandler', $doaction ), $post_ids );
 			$redirect_to = add_query_arg( 'bulk_action_success', count( $post_ids ), $redirect_to );
 		}
-
 		return $redirect_to;
 	}
 }

@@ -8,16 +8,13 @@
  * @package CustomBulkAction
  */
 
-// 必要なファイルを読み込む
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-custom-bulk-action.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-custom-bulk-action-admin.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-bulk-action-handler.php';
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
-// プラグインを初期化する
-add_action(
-	'plugins_loaded',
-	function () {
-		CustomBulkAction\CustomBulkAction::get_instance();
-		CustomBulkAction\CustomBulkActionAdmin::get_instance();
-	}
-);
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-custom-bulk-action.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-bulk-action-handler.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-custom-bulk-action-admin.php';
+
+CustomBulkAction\CustomBulkAction::get_instance();
+CustomBulkAction\CustomBulkActionAdmin::get_instance();
